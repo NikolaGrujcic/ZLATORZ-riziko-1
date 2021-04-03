@@ -82,9 +82,9 @@ class MainClass
     }
     public static void Main(string[] args)
     {
-        int[,] TestVrednosti = new int[4, 20];
+        int[,] TestVrednosti = new int[4, 30];
         for (int i = 0; i < TestVrednosti.GetLength(1); i++) TestVrednosti[0, i] = i % 7;
-        char[,] Mapa = PretvaracTxtMapeUMatricu("MAPA1");
+        char[,] Mapa = PretvaracTxtMapeUMatricu("MAPA3");
         IspisMape(Mapa, TestVrednosti);
         Console.BackgroundColor = ConsoleColor.White;
         Console.ForegroundColor = ConsoleColor.Black;
