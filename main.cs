@@ -17,19 +17,19 @@ class MainClass
         CitacMape.Close();
         return Mapa;
     }
-    static void IspisMape(char[,] Mapa ,int[,] TestVrednosti)
+    static void IspisMape(char[,] Mapa, int[,] TestVrednosti)
     {
-        for(int i=0;i<Mapa.GetLength(0);i++)
+        for (int i = 0; i < Mapa.GetLength(0); i++)
         {
-            for(int j=0;j<Mapa.GetLength(1);j++)
+            for (int j = 0; j < Mapa.GetLength(1); j++)
             {
-                int broj = Convert.ToInt32(Mapa[i, j]);//ovo treba da se popravi iz nekog razloga nikad nije kako treba
+                int broj = car-'A';
+
                 if (Mapa[i, j] == '#')
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
                     Console.BackgroundColor = ConsoleColor.Blue;
                 }
-                else if (Mapa[i, j] == null) ;
                 else if (Mapa[i, j] == 'Z')
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
@@ -40,14 +40,14 @@ class MainClass
                     Console.BackgroundColor = ConsoleColor.Gray;
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
-                else if (TestVrednosti[0, Convert.ToInt32(Mapa[i, j]) - Convert.ToInt32('A')] == 1)
+                else if (TestVrednosti[0, broj] == 1)
                 {
                     Console.BackgroundColor = ConsoleColor.Green;
                     Console.ForegroundColor = ConsoleColor.Green;
                 }
-                else if (TestVrednosti[0, Convert.ToInt32(Mapa[i, j]) - Convert.ToInt32('A')] == 2)
+                else if (TestVrednosti[0, broj] == 2)
                 {
-                    Console.BackgroundColor=ConsoleColor.Red;
+                    Console.BackgroundColor = ConsoleColor.Red;
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
                 Console.Write(Mapa[i, j]);
@@ -57,9 +57,9 @@ class MainClass
     }
     public static void Main(string[] args)
     {
-        int[,] TestVrednosti = new int[4, 100];//Ovo treba da bude 20 ne znam zasto nije (kao 20 teritorija)
+        int[,] TestVrednosti = new int[4, 20];
         for (int i = 0; i < TestVrednosti.GetLength(1); i++) TestVrednosti[0, i] = i % 6;
-        char[,] Mapa = PretvaracTxtMapeUMatricu("MAPA1");
+        char[,] Mapa = PretvaracTxtMapeUMatricu("MAPA1.txt");
         IspisMape(Mapa, TestVrednosti);
     }
 }
