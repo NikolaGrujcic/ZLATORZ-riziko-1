@@ -23,7 +23,8 @@ class MainClass
         {
             for (int j = 0; j < Mapa.GetLength(1); j++)
             {
-                int broj = car-'A';
+
+                int broj = Mapa[i, j];
 
                 if (Mapa[i, j] == '#')
                 {
@@ -32,8 +33,8 @@ class MainClass
                 }
                 else if (Mapa[i, j] == 'Z')
                 {
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.BackgroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = ConsoleColor.Black;
                 }
                 else if (TestVrednosti[0, broj] == 0)
                 {
@@ -57,9 +58,9 @@ class MainClass
     }
     public static void Main(string[] args)
     {
-        int[,] TestVrednosti = new int[4, 20];
+        int[,] TestVrednosti = new int[4, 100];
         for (int i = 0; i < TestVrednosti.GetLength(1); i++) TestVrednosti[0, i] = i % 6;
-        char[,] Mapa = PretvaracTxtMapeUMatricu("MAPA1.txt");
+        char[,] Mapa = PretvaracTxtMapeUMatricu("MAPA1");
         IspisMape(Mapa, TestVrednosti);
     }
 }
