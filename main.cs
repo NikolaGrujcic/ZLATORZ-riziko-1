@@ -139,9 +139,10 @@ class MainClass
 	  static int y = 4;
 	  static int BrojIgraca;
 	  static int kol = 0;
+    static int kursorPolja = 18;
     static void IdiDesno(int a)
 	  {
-		  if (x < 18) { x += 4; kol++; }
+		  if (x < kursorPolja) { x += 4; kol++; }
 	  }
 	  static void IdiLevo()
 	  {
@@ -175,9 +176,11 @@ class MainClass
     }
     public static void Main(string[] args)
     {
+        //Console.WriteLine("Izaberite broj igraca: ");
+        //BiranjeIgraca();
         int[,] TestVrednosti = new int[4, 40];
         for (int i = 0; i < TestVrednosti.GetLength(1); i++) TestVrednosti[0, i] = i % 7;
-        char[,] Mapa = PretvaracTxtMapeUMatricu("MAPA3V2");
+        char[,] Mapa = PretvaracTxtMapeUMatricu("MAPA1");
         IspisMape(Mapa, TestVrednosti);
     }
 }
