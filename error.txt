@@ -206,4 +206,4 @@ System.IndexOutOfRangeException: Index was outside the bounds of the array.
   at MainClass.Main (System.String[] args) [0x0003a] in /home/runner/ZLATORZ-riziko-1/main.cs:70 
 [ERROR] FATAL UNHANDLED EXCEPTION: System.IndexOutOfRangeException: Index was outside the bounds of the array.
   at MainClass.IspisMape (System.Char[,] Mapa, System.Int32[,] TestVrednosti) [0x00084] in /home/runner/ZLATORZ-riziko-1/main.cs:40 
-  at MainClass.Main (System.String[] args) [0x0003a] in /home/runner/ZLATORZ-riziko-1/main.cs:70 
+  at MainClass.Main (System.String[] args) [0x0003a] in /home/runner/ZLATORZ-riziko-1/main.cs:70
