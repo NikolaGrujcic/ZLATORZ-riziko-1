@@ -23,11 +23,12 @@ class MainClass
     {
         for (int i = 0; i < Mapa.GetLength(0); i++)
         {
+            Console.Beep();
             for (int j = 0; j < Mapa.GetLength(1); j++)
             {
 
                 int broj = Mapa[i, j] - 'A';
-
+                
                 if (Mapa[i, j] == '#')
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
@@ -138,6 +139,7 @@ class MainClass
     static int x = 5;
     static int y = 4;
     static int BrojIgraca;
+    static int brojMape;
     static int kol = 0;
     static int kursorPolja = 18;
     static void IdiDesno(int a)
@@ -148,7 +150,7 @@ class MainClass
     {
         if (x > 5) { x -= 4; kol--; }
     }
-    static void IzaberiPolje(int a)
+    static void IzaberiBrojIgraca(int a)
     {
         ConsoleKeyInfo cki;
         Console.SetCursorPosition(x, y);
@@ -165,14 +167,40 @@ class MainClass
         if (x == 17) BrojIgraca = 5;
         if (x == 21) BrojIgraca = 6;
     }
+    static void IzaberiMapu(int a)
+    {
+        ConsoleKeyInfo cki;
+        x = 5;
+        y = 4;
+        Console.SetCursorPosition(x, y);
+        do
+        {
+            cki = Console.ReadKey(true);
+            if (cki.Key == ConsoleKey.LeftArrow) IdiLevo();
+            else if (cki.Key == ConsoleKey.RightArrow) IdiDesno(a);
+            Console.SetCursorPosition(x, y);
+        } while (cki.Key != ConsoleKey.Enter);
+        if (x == 5) brojMape = 1;
+        if (x == 9) brojMape = 2;
+        if (x == 13) brojMape = 3;
+    }
     static void BiranjeIgraca()
     {
         string[] brojevi = { " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
         Nacrtaj(brojevi, 5, 2, 1, 3);
-        IzaberiPolje(5);
+        IzaberiBrojIgraca(5);
         Console.SetCursorPosition(4, 9);
         Console.Clear();
         Console.WriteLine(BrojIgraca);
+    }
+    static void BiranjeMape()
+    {
+      string[] mape = {" 1 " , " 2 " , " 3 "};
+      Nacrtaj(mape, 3, 2, 1, 3);
+      kursorPolja = 12;
+      IzaberiMapu(3);
+      Console.SetCursorPosition(4,9);
+      Console.Clear();
     }
     static void IspisiStatusIgreNaTabli(int[,] Vrednosti, string imeMape)
     {
@@ -231,16 +259,73 @@ class MainClass
 
         }
     }
-
+    static void ZameniVlasnika(char[,] Mapa, string imeOsvojeneTeritorije, int BrojNovogVlasnika)//Metoda koja na pozivu zameni boju teritorije koja se osvoji
+    {
+        if (BrojNovogVlasnika == 0)
+        {
+            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+        else if (BrojNovogVlasnika == 1)
+        {
+            Console.BackgroundColor = ConsoleColor.Magenta;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+        }
+        else if (BrojNovogVlasnika == 2)
+        {
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Red;
+        }
+        else if (BrojNovogVlasnika == 3)
+        {
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+        }
+        else if (BrojNovogVlasnika == 4)
+        {
+            Console.BackgroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Cyan;
+        }
+        else if (BrojNovogVlasnika == 5)
+        {
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+        }
+        else if (BrojNovogVlasnika == 6)
+        {
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+        }
+        for(int i=0;i<Mapa.GetLength(0);i++)
+        {
+            for (int j = 0; j < Mapa.GetLength(1); j++)
+            {
+                char TrazenoSlovo=Convert.ToChar(Convert.ToInt32(imeOsvojeneTeritorije[0])+(Convert.ToInt32(imeOsvojeneTeritorije[1]-1)*26)); 
+                Console.Error.Write(TrazenoSlovo);
+                if(Mapa[i,j]==TrazenoSlovo)
+                {
+                  Console.SetCursorPosition(i,j);
+                  Console.Write("A");
+                }
+            }
+        }
+    }
     public static void Main(string[] args)
     {
-        string imeMape = "MAPA3";//od sada ovde menjajte ime
+        Console.Clear();
         Console.WriteLine("Izaberite broj igraca: ");
         BiranjeIgraca();
+        Console.WriteLine("Izaberite mapu (1 - svet, 2 - nzm, 3 - mapa iz GoT-a): ");
+        BiranjeMape();
+        string imeMape;
+        if (brojMape == 1) imeMape = "MAPA1";
+        else if (brojMape == 2) imeMape = "MAPA2";
+        else imeMape = "MAPA3";
         int[,] Vrednosti = new int[4, 40];//cije, vojnici, konji, avioni
         for (int i = 0; i < Vrednosti.GetLength(1); i++) Vrednosti[0, i] = i % 7;
         char[,] Mapa = PretvaracTxtMapeUMatricu(imeMape);
         IspisMape(Mapa, Vrednosti);
         IspisiStatusIgreNaTabli(Vrednosti,imeMape);
+        //ZameniVlasnika(Mapa,"H1",4);
     }
 }
