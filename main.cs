@@ -310,6 +310,202 @@ class MainClass
             }
         }
     }
+    static void IspisiKockuPraznu(int SirinaKordinata, int VisinaKordinata, char boja)
+        {
+            if (boja == 'C')
+            {
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+            else
+            {
+                Console.BackgroundColor = ConsoleColor.Blue;
+                Console.ForegroundColor = ConsoleColor.Blue;
+            }
+            for (int i = 0; i < 7; i++)
+            {
+                Console.SetCursorPosition(SirinaKordinata, VisinaKordinata + i);
+                Console.Write("              ");
+            }
+            Console.SetCursorPosition(0,0);
+        }
+        static void IspisiKockuJedan(int SirinaKordinata, int VisinaKordinata)
+        {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(SirinaKordinata + 6, VisinaKordinata + 3);
+            Console.Write("##");
+            Console.SetCursorPosition(0,0);
+
+        }
+        static void IspisiKockuDva(int SirinaKordinata, int VisinaKordinata)
+        {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 1);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 5);
+            Console.Write("##");
+            Console.SetCursorPosition(0,0);
+        }
+        static void IspisiKockuTri(int SirinaKordinata, int VisinaKordinata)
+        {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 1);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 5);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 6, VisinaKordinata + 3);
+            Console.Write("##");
+            Console.SetCursorPosition(0,0);
+        }
+        static void IspisiKockuCetiri(int SirinaKordinata, int VisinaKordinata)
+        {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 1);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 1);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 5);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 5);
+            Console.Write("##");
+            Console.SetCursorPosition(0,0);
+        }
+        static void IspisiKockuPet(int SirinaKordinata, int VisinaKordinata)
+        {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 1);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 1);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 6, VisinaKordinata + 3);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 5);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 5);
+            Console.Write("##");
+            Console.SetCursorPosition(0,0);
+        }
+        static void IspisiKockuSest(int SirinaKordinata, int VisinaKordinata)
+        {
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 1);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 3);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 1);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 5);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 10, VisinaKordinata + 3);
+            Console.Write("##");
+            Console.SetCursorPosition(SirinaKordinata + 2, VisinaKordinata + 5);
+            Console.Write("##");
+            Console.SetCursorPosition(0,0);
+        }
+        static void IspisiKocke(int[] VrednostiNaKockama)
+        {
+            Random rand = new Random();
+            int SirinaKordinata = 210;
+            int VisinaKordinata = 3;
+            for (int i = 0; i < 5; i++)
+            {
+                IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, i > 2 ? 'B' : 'C');
+            }
+            for (int i = 0; i < 5; i++)
+            {
+              System.Threading.Thread.Sleep(500);
+                char boja = i > 2 ? 'B' : 'C';
+                if (VrednostiNaKockama[i] == 0)
+                {
+                    IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                    continue;
+                }
+                else
+                {
+                    int proslinum = -1;
+                    for (int j = 0; j < 12; j++)
+                    {
+                        int num = rand.Next(1, 6);
+                        if(proslinum==num)
+                        {
+                            if (num == 6) num--;
+                            else if (num == 1) num++;
+                            else num--;
+                        }
+                        proslinum = num;
+                        if (num == 1)
+                        {
+                            IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                            IspisiKockuJedan(SirinaKordinata, VisinaKordinata + i * 8);
+                        }
+                        else if (num == 2)
+                        {
+                            IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                            IspisiKockuDva(SirinaKordinata, VisinaKordinata + i * 8);
+                        }
+                        else if (num == 3)
+                        {
+                            IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                            IspisiKockuTri(SirinaKordinata, VisinaKordinata + i * 8);
+                        }
+                        else if (num == 4)
+                        {
+                            IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i* 8, boja);
+                            IspisiKockuCetiri(SirinaKordinata, VisinaKordinata + i * 8);
+                        }
+                        else if (num == 5)
+                        {
+                            IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                            IspisiKockuPet(SirinaKordinata, VisinaKordinata + i * 8);
+                        }
+                        else if (num == 6)
+                        {
+                            IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                            IspisiKockuSest(SirinaKordinata, VisinaKordinata + i * 8);
+                        }
+                        Console.Beep();
+                        System.Threading.Thread.Sleep(100+j * 20);
+                    }
+                }
+                if (VrednostiNaKockama[i] == 1)
+                {
+                    IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                    IspisiKockuJedan(SirinaKordinata, VisinaKordinata + i * 8);
+                }
+                else if (VrednostiNaKockama[i] == 2)
+                {
+                    IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                    IspisiKockuDva(SirinaKordinata, VisinaKordinata + i * 8);
+                }
+                else if (VrednostiNaKockama[i] == 3)
+                {
+                    IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                    IspisiKockuTri(SirinaKordinata, VisinaKordinata + i * 8);
+                }
+                else if (VrednostiNaKockama[i] == 4)
+                {
+                    IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                    IspisiKockuCetiri(SirinaKordinata, VisinaKordinata + i * 8);
+                }
+                else if (VrednostiNaKockama[i] == 5)
+                {
+                    IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                    IspisiKockuPet(SirinaKordinata, VisinaKordinata + i * 8);
+                }
+                else if (VrednostiNaKockama[i] == 6)
+                {
+                    IspisiKockuPraznu(SirinaKordinata, VisinaKordinata + i * 8, boja);
+                    IspisiKockuSest(SirinaKordinata, VisinaKordinata + i * 8);
+                }
+                Console.Beep();
+            }
+        }
     public static void Main(string[] args)
     {
         Console.Clear();
@@ -326,6 +522,8 @@ class MainClass
         char[,] Mapa = PretvaracTxtMapeUMatricu(imeMape);
         IspisMape(Mapa, Vrednosti);
         IspisiStatusIgreNaTabli(Vrednosti,imeMape);
+        int[] VrednostiNaKockama = {1,4,2,6,3};
+        IspisiKocke(VrednostiNaKockama);
         //ZameniVlasnika(Mapa,"H1",4);
     }
 }
