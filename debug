@@ -1,0 +1,3 @@
+#! /bin/bash
+mcs -debug -out:main.exe main.cs
+mono --debug main.exe

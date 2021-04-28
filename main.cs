@@ -2,6 +2,25 @@ using System;
 using System.IO;
 class MainClass
 {
+
+  //Promenljive:
+    static int x = 110;
+    static int y = 28;
+    static int BrojIgraca;
+    static int brojMape;
+    static int kol = 0;
+    static int kursorPolja = 126;
+    static int gornjaGranica = 110;
+    static int brojTeritorija;
+
+    struct Kartica 
+    {
+      int KomePripada; //0 - nikome, 1 = prvom igracu itd.
+      int Teritorija;
+      int Tip; //0 - dzoker, 1 - pesadija, 2 - konjica, 3 - avion
+    }
+
+
     static char[,] PretvaracTxtMapeUMatricu(string ImeFajla)
     {
 
@@ -19,6 +38,7 @@ class MainClass
         CitacMape.Close();
         return Mapa;
     }
+
     static void IspisMape(char[,] Mapa, int[,] TestVrednosti)
     {
         for (int i = 0; i < Mapa.GetLength(0); i++)
@@ -81,6 +101,7 @@ class MainClass
         Console.BackgroundColor = ConsoleColor.White;
         Console.ForegroundColor = ConsoleColor.Black;
     }
+
     static void Nacrtaj(string[] brojevi, int brKol, int pocRed, int pocKol, int sirina2)
     {
         int visina = 3;
@@ -129,6 +150,7 @@ class MainClass
                 else { TablaZaBiranje(sirina2, hor); }
         }
     }
+
     static void TablaZaBiranje(int sirina, char znak)
     {
         for (int i = 0; i < sirina; i++)
@@ -136,20 +158,17 @@ class MainClass
             Console.Write(znak);
         }
     }
-    static int x = 5;
-    static int y = 4;
-    static int BrojIgraca;
-    static int brojMape;
-    static int kol = 0;
-    static int kursorPolja = 18;
+    
     static void IdiDesno(int a)
     {
         if (x < kursorPolja) { x += 4; kol++; }
     }
+
     static void IdiLevo()
     {
-        if (x > 5) { x -= 4; kol--; }
+        if (x > gornjaGranica) { x -= 4; kol--; }
     }
+
     static void IzaberiBrojIgraca(int a)
     {
         ConsoleKeyInfo cki;
@@ -161,17 +180,19 @@ class MainClass
             else if (cki.Key == ConsoleKey.RightArrow) IdiDesno(a);
             Console.SetCursorPosition(x, y);
         } while (cki.Key != ConsoleKey.Enter);
-        if (x == 5) BrojIgraca = 2;
-        if (x == 9) BrojIgraca = 3;
-        if (x == 13) BrojIgraca = 4;
-        if (x == 17) BrojIgraca = 5;
-        if (x == 21) BrojIgraca = 6;
+        if (x == 110) BrojIgraca = 2;
+        if (x == 114) BrojIgraca = 3;
+        if (x == 118) BrojIgraca = 4;
+        if (x == 122) BrojIgraca = 5;
+        if (x == 126) BrojIgraca = 6;
     }
+
     static void IzaberiMapu(int a)
     {
         ConsoleKeyInfo cki;
-        x = 5;
-        y = 4;
+        x = 114;
+        y = 34;
+        gornjaGranica = 114;
         Console.SetCursorPosition(x, y);
         do
         {
@@ -180,28 +201,41 @@ class MainClass
             else if (cki.Key == ConsoleKey.RightArrow) IdiDesno(a);
             Console.SetCursorPosition(x, y);
         } while (cki.Key != ConsoleKey.Enter);
-        if (x == 5) brojMape = 1;
-        if (x == 9) brojMape = 2;
-        if (x == 13) brojMape = 3;
+        if (x == 114) 
+        {
+          brojMape = 1;
+          brojTeritorija = 27;
+        }
+        if (x == 118) ;
+        {
+          brojMape = 2
+          brojTeritorija = 27;
+        }
+        if (x == 122) 
+        {
+          brojMape = 3;
+          //brojTeritorija = NE ZNAMO JOS;
+        }
     }
+
     static void BiranjeIgraca()
     {
         string[] brojevi = { " 2 ", " 3 ", " 4 ", " 5 ", " 6 " };
-        Nacrtaj(brojevi, 5, 2, 1, 3);
+        Nacrtaj(brojevi, 5, 26, 106, 3);
         IzaberiBrojIgraca(5);
         Console.SetCursorPosition(4, 9);
-        Console.Clear();
-        Console.WriteLine(BrojIgraca);
     }
+
     static void BiranjeMape()
     {
       string[] mape = {" 1 " , " 2 " , " 3 "};
-      Nacrtaj(mape, 3, 2, 1, 3);
-      kursorPolja = 12;
+      Nacrtaj(mape, 3, 32, 110, 3);
+      kursorPolja = 122;
       IzaberiMapu(3);
-      Console.SetCursorPosition(4,9);
+      Console.SetCursorPosition(4, 9);
       Console.Clear();
     }
+
     static void IspisiStatusIgreNaTabli(int[,] Vrednosti, string imeMape)
     {
         int[,] PozicijeStatusa = new int[2, Vrednosti.GetLength(1)];
@@ -254,11 +288,14 @@ class MainClass
             }
             
             Console.SetCursorPosition(PozicijeStatusa[0,i],PozicijeStatusa[1,i]);
-            Console.Write(Convert.ToChar(Convert.ToInt32('A') + i - ((i / 26) * 26)) + "" + (1 + (i / 26)) + ":");
+            //Console.Write(Convert.ToChar(Convert.ToInt32('A') + i - ((i / 26) * 26)) + "" + (1 + (i / 26)) + ":");
+            Console.Write(i < 9 ? "0" : "" + "");
+            Console.Write(i + 1 + ":");
             Console.Write("\uD83D\uDC82:" + Vrednosti[1, i] + "\U0001f40e:" + Vrednosti[2, i] + "\U0001f6e9\uFE0F:" + Vrednosti[3, i]);
 
         }
     }
+
     static void ZameniVlasnika(char[,] Mapa, string imeOsvojeneTeritorije, int BrojNovogVlasnika)//Metoda koja na pozivu zameni boju teritorije koja se osvoji
     {
         if (BrojNovogVlasnika == 0)
@@ -296,20 +333,21 @@ class MainClass
             Console.BackgroundColor = ConsoleColor.Yellow;
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
+        int AsciiRed=0;
+        if(imeOsvojeneTeritorije[1]=='2')AsciiRed=26;
         for(int i=0;i<Mapa.GetLength(0);i++)
         {
             for (int j = 0; j < Mapa.GetLength(1); j++)
             {
-                char TrazenoSlovo=Convert.ToChar(Convert.ToInt32(imeOsvojeneTeritorije[0])+(Convert.ToInt32(imeOsvojeneTeritorije[1]-1)*26)); 
-                Console.Error.Write(TrazenoSlovo);
-                if(Mapa[i,j]==TrazenoSlovo)
+                if(Convert.ToInt32(Mapa[i,j])==Convert.ToInt32(imeOsvojeneTeritorije[0])+AsciiRed)
                 {
-                  Console.SetCursorPosition(i,j);
-                  Console.Write("A");
+                  Console.SetCursorPosition(j,i);
+                  Console.Write(" ");
                 }
             }
         }
     }
+
     static void IspisiKockuPraznu(int SirinaKordinata, int VisinaKordinata, char boja)
         {
             if (boja == 'C')
@@ -319,8 +357,8 @@ class MainClass
             }
             else
             {
-                Console.BackgroundColor = ConsoleColor.Blue;
-                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
             }
             for (int i = 0; i < 7; i++)
             {
@@ -506,12 +544,67 @@ class MainClass
                 Console.Beep();
             }
         }
+
+        static int[] NasumicneKocke(int BC, int BP)//BC-Broj crvenih kocki, BP-Broj plavih kocki
+        {
+                  Random rand = new Random();
+                  int[] VrednostiNaKockama = new int[5];
+                  for(int i=0;i<VrednostiNaKockama.Length;i++)VrednostiNaKockama[i] = rand.Next(1, 6);
+                  if(BC<=2)VrednostiNaKockama[2]=0;
+                  if(BC==1)VrednostiNaKockama[1]=0;
+                  if(BP==1)VrednostiNaKockama[4]=0;
+                  return VrednostiNaKockama;
+        }
+
+        static void IspisiRizikoLogo(int SirinaKordinata, int VisinaKordinata)
+        {
+            char[,] RizikoLogo = {
+            {'A','A','A','A','A','A',' ',' ','A','A',' ','A','A','A','A','A','A','A',' ','A','A',' ','A','A',' ',' ',' ','A','A',' ',' ','A','A','A','A','A',' '},
+            {'A','A',' ',' ',' ','A','A',' ','A','A',' ',' ',' ',' ',' ',' ','A','A',' ','A','A',' ','A','A',' ',' ','A','A',' ',' ','A','A',' ',' ',' ','A','A' },
+            {'A','A','A','A','A','A',' ',' ','A','A',' ',' ',' ','A','A','A',' ',' ',' ','A','A',' ','A','A','A','A','A',' ',' ',' ','A','A',' ',' ',' ','A','A' },
+            {'A','A',' ',' ',' ','A','A',' ','A','A',' ','A','A',' ',' ',' ',' ',' ',' ','A','A',' ','A','A',' ',' ','A','A',' ',' ','A','A',' ',' ',' ','A','A'},
+            {'A','A',' ',' ',' ','A','A',' ','A','A',' ','A','A','A','A','A','A','A',' ','A','A',' ','A','A',' ',' ',' ','A','A',' ',' ','A','A','A','A','A', ' ' }
+            };
+            for(int i=0;i<RizikoLogo.GetLength(0);i++)
+            {
+                Console.SetCursorPosition(SirinaKordinata, VisinaKordinata+i);
+                for (int j = 0; j < RizikoLogo.GetLength(1); j++)
+                {
+                    if (RizikoLogo[i, j] == 'A')
+                    {
+                        Console.Write("\u2588");
+                    }
+                    else Console.Write(" ");
+                }
+            }
+        }
+
+        static Kartica[] PravljenjeKartica ()
+        {
+          Kartica[] sveKartice = new Kartica[brojTeritorija * 4];
+          int _br = 0;
+          for (int i = 0; i < brojTeritorija.Length; i++)
+          {
+            for (int j = 0; j < 4; j++)
+            {
+              sveKartice[_br].KomePripada = 0;
+              sveKartice[_br].Teritorija = i;
+              sveKartice[_br].Tip = j;
+              _br++;
+            }
+          }
+          return sveKartice;
+        }
+
     public static void Main(string[] args)
     {
         Console.Clear();
-        Console.WriteLine("Izaberite broj igraca: ");
+        IspisiRizikoLogo(100,16);
+        Console.SetCursorPosition(108, 25);
+        Console.Write("Izaberite broj igraca: ");
         BiranjeIgraca();
-        Console.WriteLine("Izaberite mapu (1 - svet, 2 - nzm, 3 - mapa iz GoT-a): ");
+        Console.SetCursorPosition(91, 31);
+        Console.Write("Izaberite mapu (1 - svet, 2 - nzm, 3 - mapa iz GoT-a): ");
         BiranjeMape();
         string imeMape;
         if (brojMape == 1) imeMape = "MAPA1";
@@ -522,8 +615,9 @@ class MainClass
         char[,] Mapa = PretvaracTxtMapeUMatricu(imeMape);
         IspisMape(Mapa, Vrednosti);
         IspisiStatusIgreNaTabli(Vrednosti,imeMape);
-        int[] VrednostiNaKockama = {1,4,2,6,3};
-        IspisiKocke(VrednostiNaKockama);
-        //ZameniVlasnika(Mapa,"H1",4);
+        int[] VrednostiNaKockama = NasumicneKocke(2,1);
+        //IspisiKocke(VrednostiNaKockama);
+        //ZameniVlasnika(Mapa,"A1",1);  
+        
     }
 }
