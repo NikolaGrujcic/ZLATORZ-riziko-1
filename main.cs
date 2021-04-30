@@ -6,7 +6,7 @@ class MainClass
   //Promenljive:
     static int x = 110;
     static int y = 28;
-    static int BrojIgraca;
+    static int brojIgraca;
     static int brojMape;
     static int kol = 0;
     static int kursorPolja = 126;
@@ -180,11 +180,11 @@ class MainClass
             else if (cki.Key == ConsoleKey.RightArrow) IdiDesno(a);
             Console.SetCursorPosition(x, y);
         } while (cki.Key != ConsoleKey.Enter);
-        if (x == 110) BrojIgraca = 2;
-        if (x == 114) BrojIgraca = 3;
-        if (x == 118) BrojIgraca = 4;
-        if (x == 122) BrojIgraca = 5;
-        if (x == 126) BrojIgraca = 6;
+        if (x == 110) brojIgraca = 2;
+        if (x == 114) brojIgraca = 3;
+        if (x == 118) brojIgraca = 4;
+        if (x == 122) brojIgraca = 5;
+        if (x == 126) brojIgraca = 6;
     }
 
     static void IzaberiMapu(int a)
@@ -594,6 +594,37 @@ class MainClass
             }
           }
           return sveKartice;
+        }
+
+        static void RaspodelaTeritorija ()
+        {
+          
+        }
+        
+        static bool DaLiMozeDaSeNapadne (string ter1, string ter2)
+        {
+          string imeMape;
+          if(brojMape == 1) imeMape = "MAPA1IT";
+          else if(brojMape == 2) imeMape = "MAPA2IT";
+          else imeMape = "MAPA3IT";
+          StreamReader proveraTeritorija = new StreamReader (imeMape);
+          string niz;
+          string[] teritorijeNiza;
+          while(!proveraTeritorija.EndOfStream)
+          {
+            niz = proveraTeritorija.ReadLine();
+            teritorijeNiza = niz.Split();
+            if(teritorijeNiza[0] == ter1)
+            {
+              for (int i = 1;i < teritorijeNiza.Length; i++)
+              {
+                if(teritorijeNiza[i] == ter2) return true;
+              }
+            }
+            else continue;
+          }
+          proveraTeritorija.Close();
+          return false;
         }
 
     public static void Main(string[] args)
