@@ -12,6 +12,7 @@ class MainClass
     static int kursorPolja = 126;
     static int gornjaGranica = 110;
     static int brojTeritorija;
+    static int trenutniIgrac;
 
     struct Kartica 
     {
@@ -339,7 +340,7 @@ class MainClass
         {
             for (int j = 0; j < Mapa.GetLength(1); j++)
             {
-                if(Convert.ToInt32(Mapa[i,j])==Convert.ToInt32(imeOsvojeneTeritorije[0])+AsciiRed)
+                if(Convert.ToInt32(Mapa[i,j])==Convert.ToInt32('A')+AsciiRed)
                 {
                   Console.SetCursorPosition(j,i);
                   Console.Write(" ");
@@ -626,10 +627,90 @@ class MainClass
           proveraTeritorija.Close();
           return false;
         }
-
+static void NacrtajHorizontalnoPolje(string tekst, int left, int top)
+        {
+            int sirinaDugmeta = 26;
+            char hor = '\u2500', ver = '\u2502';
+            char gLevi = '\u250C', gDesni = '\u2510';
+            char dLevi = '\u2514', dDesni = '\u2518';
+            //gornji red:
+            Console.SetCursorPosition(left, top);
+            Console.Write(gLevi);
+            for (int i = 0; i < sirinaDugmeta; i++) Console.Write(hor);
+            Console.WriteLine(gDesni);
+            //prazan red iznad srednjeg reda:
+            Console.SetCursorPosition(left, top + 1);
+            Console.Write(ver);
+            Console.SetCursorPosition(left + sirinaDugmeta + 1, top + 1);
+            Console.Write(ver);
+            //srednji red:
+            Console.SetCursorPosition(left, top + 2);
+            Console.Write(ver);
+            Console.SetCursorPosition(left + (sirinaDugmeta+2 - tekst.Length)/2,top+2);
+            Console.Write(tekst);
+            Console.SetCursorPosition(left + sirinaDugmeta+1, top + 2);
+            Console.Write(ver);
+            //prazan red ispod srednjeg reda:
+            Console.SetCursorPosition(left, top + 3);
+            Console.Write(ver);
+            Console.SetCursorPosition(left + sirinaDugmeta + 1, top + 3);
+            Console.Write(ver);
+            //skroz donji red:
+            Console.SetCursorPosition(left, top + 4);
+            Console.Write(dLevi);
+            for (int i = 0; i < sirinaDugmeta; i++) Console.Write(hor);
+            Console.WriteLine(dDesni);
+        }
+        static void MainMenu()
+        {
+            int leftCordPrvog=106;
+            int topCordPrvog = 24;
+            int brojOpcije = 0;
+            IspisiRizikoLogo(leftCordPrvog-6, topCordPrvog-8);
+            ConsoleKeyInfo unetoDugme;
+            NacrtajHorizontalnoPolje("Nova igra", leftCordPrvog, topCordPrvog);
+            NacrtajHorizontalnoPolje("Učitaj igru", leftCordPrvog, topCordPrvog + 7);
+            NacrtajHorizontalnoPolje("Napusti riziko", leftCordPrvog, topCordPrvog + 14);
+            Console.ForegroundColor = ConsoleColor.Red;
+            NacrtajHorizontalnoPolje("Nova igra", leftCordPrvog, topCordPrvog);
+            Console.ResetColor();
+            do
+            {
+                
+                unetoDugme = Console.ReadKey(true);
+                
+                if(unetoDugme.Key==ConsoleKey.DownArrow && brojOpcije<2)
+                {
+                    Console.ResetColor();
+                    NacrtajHorizontalnoPolje("Nova igra", leftCordPrvog, topCordPrvog);
+                    NacrtajHorizontalnoPolje("Učitaj igru", leftCordPrvog, topCordPrvog + 7);
+                    NacrtajHorizontalnoPolje("Napusti riziko", leftCordPrvog, topCordPrvog + 14);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    brojOpcije++;
+                    if (brojOpcije == 1) NacrtajHorizontalnoPolje("Učitaj igru", leftCordPrvog, topCordPrvog + 7);
+                    if (brojOpcije == 2) NacrtajHorizontalnoPolje("Napusti riziko", leftCordPrvog, topCordPrvog + 14);
+                    Console.SetCursorPosition(0, 0);
+                }
+                if (unetoDugme.Key == ConsoleKey.UpArrow && brojOpcije >0)
+                {
+                    Console.ResetColor();
+                    NacrtajHorizontalnoPolje("Nova igra", leftCordPrvog, topCordPrvog);
+                    NacrtajHorizontalnoPolje("Učitaj igru", leftCordPrvog, topCordPrvog + 7);
+                    NacrtajHorizontalnoPolje("Napusti riziko", leftCordPrvog, topCordPrvog + 14);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    brojOpcije--;
+                    if (brojOpcije == 0) NacrtajHorizontalnoPolje("Nova igra", leftCordPrvog, topCordPrvog);
+                    if (brojOpcije == 1) NacrtajHorizontalnoPolje("Učitaj igru", leftCordPrvog, topCordPrvog + 7);
+                    Console.SetCursorPosition(0, 0);
+                }
+            } while (unetoDugme.Key!=ConsoleKey.Enter);
+            return brojOpcije;
+        }
     public static void Main(string[] args)
     {
         Console.Clear();
+        Console.WriteLine("HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALO");
+        MainMenu();
         IspisiRizikoLogo(100,16);
         Console.SetCursorPosition(108, 25);
         Console.Write("Izaberite broj igraca: ");
@@ -648,7 +729,7 @@ class MainClass
         IspisiStatusIgreNaTabli(Vrednosti,imeMape);
         int[] VrednostiNaKockama = NasumicneKocke(2,1);
         //IspisiKocke(VrednostiNaKockama);
-        //ZameniVlasnika(Mapa,"A1",1);  
+        ZameniVlasnika(Mapa,"A1",3);  
         
     }
 }
