@@ -209,7 +209,7 @@ class MainClass
         }
         if (x == 118) ;
         {
-          brojMape = 2
+          brojMape = 2;
           brojTeritorija = 27;
         }
         if (x == 122) 
@@ -297,7 +297,7 @@ class MainClass
         }
     }
 
-    static void ZameniVlasnika(char[,] Mapa, string imeOsvojeneTeritorije, int BrojNovogVlasnika)//Metoda koja na pozivu zameni boju teritorije koja se osvoji
+    static void ZameniVlasnika(char[,] Mapa, int brojOsvojeneTeritorije, int BrojNovogVlasnika)//Metoda koja na pozivu zameni boju teritorije koja se osvoji
     {
         if (BrojNovogVlasnika == 0)
         {
@@ -334,13 +334,11 @@ class MainClass
             Console.BackgroundColor = ConsoleColor.Yellow;
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
-        int AsciiRed=0;
-        if(imeOsvojeneTeritorije[1]=='2')AsciiRed=26;
         for(int i=0;i<Mapa.GetLength(0);i++)
         {
             for (int j = 0; j < Mapa.GetLength(1); j++)
             {
-                if(Convert.ToInt32(Mapa[i,j])==Convert.ToInt32('A')+AsciiRed)
+                if(Convert.ToInt32(Mapa[i,j])==Convert.ToInt32('A')+brojOsvojeneTeritorije)
                 {
                   Console.SetCursorPosition(j,i);
                   Console.Write(" ");
@@ -579,7 +577,7 @@ class MainClass
                 }
             }
         }
-
+/*
         static Kartica[] PravljenjeKartica ()
         {
           Kartica[] sveKartice = new Kartica[brojTeritorija * 4];
@@ -601,7 +599,7 @@ class MainClass
         {
           
         }
-        
+        */
         static bool DaLiMozeDaSeNapadne (string ter1, string ter2)
         {
           string imeMape;
@@ -704,12 +702,13 @@ static void NacrtajHorizontalnoPolje(string tekst, int left, int top)
                     Console.SetCursorPosition(0, 0);
                 }
             } while (unetoDugme.Key!=ConsoleKey.Enter);
-            return brojOpcije;
+            Console.Clear();
+            Console.ResetColor();
+            //return brojOpcije;
         }
     public static void Main(string[] args)
     {
         Console.Clear();
-        Console.WriteLine("HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALO");
         MainMenu();
         IspisiRizikoLogo(100,16);
         Console.SetCursorPosition(108, 25);
@@ -729,7 +728,7 @@ static void NacrtajHorizontalnoPolje(string tekst, int left, int top)
         IspisiStatusIgreNaTabli(Vrednosti,imeMape);
         int[] VrednostiNaKockama = NasumicneKocke(2,1);
         //IspisiKocke(VrednostiNaKockama);
-        ZameniVlasnika(Mapa,"A1",3);  
+        ZameniVlasnika(Mapa,5,3);  
         
     }
 }
