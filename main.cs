@@ -46,7 +46,8 @@ class MainClass
         for (int i = 0; i < Mapa.GetLength(0); i++)
         {
             Console.Beep();
-            for (int j = 0; j < Mapa.GetLength(1); j++)
+            for (int j = 0; j < Mapa.GetLength(1); j++) 
+            
             {
 
                 int broj = Mapa[i, j] - 'A';
@@ -226,7 +227,6 @@ class MainClass
         Nacrtaj(brojevi, 5, 26, 106, 3);
         IzaberiBrojIgraca(5);
         Console.SetCursorPosition(4, 9);
-        Console.WriteLine(brojIgraca);
     }
 
     static void BiranjeMape()
@@ -717,7 +717,7 @@ class MainClass
             for(int i=50;i<54;i++)
             {
                 Console.SetCursorPosition(0, i);
-                Console.WriteLine("                                                                                                                     ");
+                Console.WriteLine("                                                                                                                                                                           ");
             }
             Console.SetCursorPosition(0,50);
         }
@@ -756,7 +756,6 @@ class MainClass
                     {
                         ObrisiTekst();
                         Console.Write("Pogresan unos. Unesite broj u opsegu 1 do " + brojTeritorija + ": ");
-                        neuspesnoIzabranaTeritorija=true;
                     }
                     if(Vrednosti[0,unetaTeritorija-1]!=0)
                     {
@@ -824,8 +823,9 @@ class MainClass
             }
             Console.Write((i % brojIgraca + 1));
             Console.ResetColor();
-            Console.Write(" bira teritoriju na koju postavlja jednog čoveka." +
-                " Unesite broj teritorje označene vašom bojom na koju želite da postavite čoveka: ");
+            Console.Write(" bira teritoriju na koju postavlja jednog čoveka.");
+            Console.WriteLine(" Ostalo vam je {0} vojnika.", ljudiKojeTrebaPodeliti[i%brojIgraca]);
+            Console.Write(" Unesite broj teritorje označene vašom bojom na koju želite da postavite čoveka: ");
             int unetaTeritorija;
             do
             {
@@ -834,9 +834,8 @@ class MainClass
                 {
                     ObrisiTekst();
                     Console.Write("Pogresan unos. Unesite jedan od brojeva teritorije vaše boje: ");
-                    neuspesnoIzabranaTeritorija = true;
                 }
-                if (Vrednosti[0, unetaTeritorija - 1] != i%brojIgraca)//ovde nešto nije kako treba da bude
+                if (Vrednosti[0, unetaTeritorija -1] != i%brojIgraca+1)//OVDEEEEE NIJEEEE DOBROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
                 {
                     ObrisiTekst();
                     Console.Write("Teritorija koju ste uneli nije vaša. Unesite broj teritorije koja je vaše boje: ");
@@ -844,6 +843,7 @@ class MainClass
                 }
             } while (neuspesnoIzabranaTeritorija);
             Vrednosti[1, unetaTeritorija - 1]++;
+            ljudiKojeTrebaPodeliti[i%brojIgraca]--;
             IspisiStatusIgreNaTabli(Vrednosti, "MAPA" + Convert.ToString(brojMape));
             i++;
         }
@@ -898,7 +898,7 @@ class MainClass
     }
 
     
-    static int[,] PromenaVojske (int[,] Vrednosti, int teritorija)
+  static int[,] PromenaVojske (int[,] Vrednosti, int teritorija)
   {
     while(Vrednosti[1, teritorija] >= 5)
     {
@@ -969,6 +969,7 @@ class MainClass
     {
       plaveKocke[i] = vrednostiKocki[i + 3];
     }
+    IspisiKocke (vrednostiKocki);
     crveneKocke = crveneKocke.OrderByDescending(c => c).ToArray();
     plaveKocke = plaveKocke.OrderByDescending(c => c).ToArray();
     for(int i = 0;i < plaveKocke.Length; i++)
@@ -1020,7 +1021,7 @@ class MainClass
         if (brojMape == 1) imeMape = "MAPA1";
         else if (brojMape == 2) imeMape = "MAPA2";
         else imeMape = "MAPA3";
-        brojIgraca = 6;
+        //brojIgraca = 6;
         int[] ljudiKojeTrebaPodeliti = new int[6];
         ljudiKojeTrebaPodeliti = PodeliPocetneVojnike();
         char[,] Mapa = PretvaracTxtMapeUMatricu(imeMape);
