@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 class MainClass
 {
 
@@ -16,9 +17,9 @@ class MainClass
 
     struct Kartica 
     {
-      int KomePripada; //0 - nikome, 1 = prvom igracu itd.
-      int Teritorija;
-      int Tip; //0 - dzoker, 1 - pesadija, 2 - konjica, 3 - avion
+      public int Vlasnik; //0 - nikome, 1 = prvom igracu itd.
+      public string Teritorija;
+      public int Tip; //0 - dzoker, 1 - pesadija, 2 - konjica, 3 - avion
     }
 
 
@@ -207,7 +208,7 @@ class MainClass
           brojMape = 1;
           brojTeritorija = 27;
         }
-        if (x == 118) ;
+        if (x == 118)
         {
           brojMape = 2;
           brojTeritorija = 27;
@@ -225,6 +226,7 @@ class MainClass
         Nacrtaj(brojevi, 5, 26, 106, 3);
         IzaberiBrojIgraca(5);
         Console.SetCursorPosition(4, 9);
+        Console.WriteLine(brojIgraca);
     }
 
     static void BiranjeMape()
@@ -601,7 +603,7 @@ class MainClass
           
         }
         */
-        static bool DaLiMozeDaSeNapadne (string ter1, string ter2)
+        static bool DaLiSeGranice (string ter1, string ter2)
         {
           string imeMape;
           if(brojMape == 1) imeMape = "MAPA1IT";
@@ -797,15 +799,29 @@ class MainClass
             if (i % brojIgraca == 0)
                 Console.BackgroundColor = ConsoleColor.Magenta;
             else if (i % brojIgraca == 1)
+            {
                 Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor=ConsoleColor.Black;
+            }
             else if (i % brojIgraca == 2)
+            {
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
+            }
             else if (i % brojIgraca == 3)
+            {
                 Console.BackgroundColor = ConsoleColor.Cyan;
+                Console.ForegroundColor=ConsoleColor.Black;
+            }
             else if (i % brojIgraca == 4)
+            {
                 Console.BackgroundColor = ConsoleColor.DarkGreen;
+                Console.ForegroundColor=ConsoleColor.Black;
+            }
             else if (i % brojIgraca == 5)
+            {
                 Console.BackgroundColor = ConsoleColor.Yellow;
+                Console.ForegroundColor=ConsoleColor.Black;
+            }
             Console.Write((i % brojIgraca + 1));
             Console.ResetColor();
             Console.Write(" bira teritoriju na koju postavlja jednog čoveka." +
@@ -880,7 +896,115 @@ class MainClass
         }
       }
     }
+
     
+    static int[,] PromenaVojske (int[,] Vrednosti, int teritorija)
+  {
+    while(Vrednosti[1, teritorija] >= 5)
+    {
+      Vrednosti[1, teritorija] -= 5;
+      Vrednosti[2, teritorija]++;
+    }
+    while(Vrednosti[2, teritorija] >= 2)
+    {
+      Vrednosti[2, teritorija] -= 2;
+      Vrednosti[3, teritorija]++;
+    }
+    return Vrednosti;
+  }
+
+  static int [,] TrupeUVojnike (int[,] Vrednosti, int teritorija)
+  {
+    while(Vrednosti[3, teritorija] > 0)
+    {
+      Vrednosti[3, teritorija]--;
+      Vrednosti[2, teritorija] += 2;
+    }
+    while(Vrednosti[2, teritorija] > 0)
+    {
+      Vrednosti[2, teritorija]--;
+      Vrednosti[1, teritorija] += 5;
+    }
+    return Vrednosti;
+  }
+
+
+  static void Napadanje(int[,] Vrednosti, char[,] Mapa)
+  {
+    Console.WriteLine("Da li zelite da napadnete? (DA/NE)");
+    string dane = Console.ReadLine();
+    while(dane.ToLower() != "da" && dane.ToLower() != "ne")
+    {
+      Console.Error.WriteLine("Unesite DA/NE.");
+    }
+    if (dane == "ne") return;
+    Console.WriteLine("Sa koje teritorije zelite da napadnete?");
+    while(!int.TryParse(Console.ReadLine(), out int terKojaNapada) || (Vrednosti[1, terKojaNapada] + 5 * Vrednosti[2, terKojaNapada] + 10 * Vrednosti[3, terKojaNapada]) < 2 || terKojaNapada < 0 || terKojaNapada > brojTeritorija)
+    {
+      Console.Error.WriteLine("Teritorija je lose uneta ili nemate dovoljno vojske za napad, unesite ponovo teritoriju");
+    }
+    Console.WriteLine("Koju teritoriju zelite da napadnete?");
+    while(!int.TryParse(Console.ReadLine(), out int terKojaBrani) || terKojaBrani < 0 || terKojaBrani > brojTeritorija || !DaLiSeGranice(Convert.ToString(terKojaNapada), Convert.ToString(terKojaBrani)))
+    {
+      Console.Error.WriteLine("Lose uneta teritorija koja se napada ili se teritorije ne granice, unesite ponovo teritoriju koju napadate.");
+    }
+    Console.WriteLine("Sa koliko trupa napadate? (1 - 3)");
+    while(!int.TryParse(Console.ReadLine(), out int kockiceNapad) || kockiceNapad < 1 || kockiceNapad > 3 || kockiceNapad <= Vrednosti[1, terKojaNapada] + 5 * Vrednosti[2, terKojaNapada] + 10 * Vrednosti[3, terKojaNapada])
+    {
+      Console.Error.WriteLine("Los unos broja trupa za napad.");
+    }
+    Console.WriteLine("Sa koliko trupa se branite? (1 - 2)");
+    while(!int.TryParse(Console.ReadLine(), out int kockiceOdbrana) || kockiceOdbrana < 1 || kockiceOdbrana > 2 || kockiceOdbrana < Vrednosti[1, terKojaNapada] + 5 * Vrednosti[2, terKojaNapada] + 10 * Vrednosti[3, terKojaNapada])
+    {
+      Console.Error.WriteLine("Los unos broja trupa za odbranu.");
+    }
+    int[] crveneKocke = new int [kockiceNapad];
+    int[] plaveKocke = new int [kockiceOdbrana];
+    int[] vrednostiKocki = NasumicneKocke(kockiceNapad, kockiceOdbrana);
+    for(int i = 0;i < crveneKocke.Length; i++)
+    {
+      crveneKocke[i] = vrednostiKocki[i];
+    }
+    for(int i = 0;i < plaveKocke.Length; i++)
+    {
+      plaveKocke[i] = vrednostiKocki[i + 3];
+    }
+    crveneKocke = crveneKocke.OrderByDescending(c => c).ToArray();
+    plaveKocke = plaveKocke.OrderByDescending(c => c).ToArray();
+    for(int i = 0;i < plaveKocke.Length; i++)
+    {
+      if(crveneKocke[i] > plaveKocke[i])
+      {
+        Console.WriteLine("Ovaj napad je bio uspesan, protivnik nije uspeo da se odbrani!");
+        TrupeUVojnike(Vrednosti, terKojaBrani);
+        Vrednosti[1, terKojaBrani] --;
+        PromenaVojske(Vrednosti, terKojaBrani);
+        if(Vrednosti[1, terKojaBrani] + Vrednosti[2, terKojaBrani] + Vrednosti[3, terKojaBrani] == 0)
+        {
+          Console.WriteLine("Svaka cast! Osvojili ste novu teritoriju.");
+          ZameniVlasnika(Mapa, terKojaBrani, trenutniIgrac);
+        }
+      }
+      else
+      {
+        Console.WriteLine("Ovaj napad je bio neuspesan, protivnik se odbranio!");
+        TrupeUVojnike(Vrednosti, terKojaNapada);
+        Vrednosti[1, terKojaNapada] --;
+        PromenaVojske(Vrednosti, terKojaNapada);
+      }
+    }
+    Console.WriteLine("Zelite li da izvrsite jos da napadate? (DA/NE)");
+    string ponovoNapad = Console.ReadLine();
+    while(ponovoNapad.ToLower() != "da" && ponovoNapad.ToLower() != "ne")
+    {
+      Console.Error.WriteLine("Unesite DA/NE!");
+      ponovoNapad = Console.ReadLine();
+    }
+    if (ponovoNapad.ToLower() == "da") Napadanje(Vrednosti, Mapa);
+    else return;
+  }
+
+
     public static void Main(string[] args)
     {
         Console.Clear();
@@ -910,6 +1034,5 @@ class MainClass
         //IspisiKocke(VrednostiNaKockama);
         ZameniVlasnika(Mapa,5,3);
         Kartica[] sveKartice = PravljenjeKartica();
-        
     }
 }
