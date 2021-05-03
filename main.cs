@@ -215,7 +215,7 @@ class MainClass
         if (x == 122) 
         {
           brojMape = 3;
-          //brojTeritorija = NE ZNAMO JOS;
+          brojTeritorija = 21;
         }
     }
 
@@ -577,24 +577,25 @@ class MainClass
                 }
             }
         }
-/*
-        static Kartica[] PravljenjeKartica ()
-        {
-          Kartica[] sveKartice = new Kartica[brojTeritorija * 4];
-          int _br = 0;
-          for (int i = 0; i < brojTeritorija.Length; i++)
-          {
-            for (int j = 0; j < 4; j++)
-            {
-              sveKartice[_br].KomePripada = 0;
-              sveKartice[_br].Teritorija = i;
-              sveKartice[_br].Tip = j;
-              _br++;
-            }
-          }
-          return sveKartice;
-        }
 
+       static Kartica[] PravljenjeKartica ()
+      {
+        Kartica[] sveKartice = new Kartica[brojTeritorija * 4];
+        int br = 0;
+        for (int i = 0; i < brojTeritorija; i++)
+        {
+          for (int j = 0; j < 4; j++)
+          {
+            sveKartice[br].Vlasnik = 0;
+            if (i < 9) sveKartice[br].Teritorija = "0" + Convert.ToString(i + 1);
+            else sveKartice[br].Teritorija = Convert.ToString(i + 1);
+            sveKartice[br].Tip = j;
+            br++;
+          }
+        }
+        return sveKartice;
+      }
+/*
         static void RaspodelaTeritorija ()
         {
           
@@ -625,7 +626,8 @@ class MainClass
           proveraTeritorija.Close();
           return false;
         }
-static void NacrtajHorizontalnoPolje(string tekst, int left, int top)
+
+        static void NacrtajHorizontalnoPolje(string tekst, int left, int top)
         {
             int sirinaDugmeta = 26;
             char hor = '\u2500', ver = '\u2502';
@@ -706,69 +708,184 @@ static void NacrtajHorizontalnoPolje(string tekst, int left, int top)
             Console.ResetColor();
             return brojOpcije;
         }
+
         static void ObrisiTekst()
-    {
-      Console.ResetColor();
-        for(int i=50;i<54;i++)
         {
-            Console.SetCursorPosition(0, i);
-            Console.WriteLine("                                                                                                                     ");
+          Console.ResetColor();
+            for(int i=50;i<54;i++)
+            {
+                Console.SetCursorPosition(0, i);
+                Console.WriteLine("                                                                                                                     ");
+            }
+            Console.SetCursorPosition(0,50);
         }
-        Console.SetCursorPosition(0,50);
-    }
-    static int[,] PodeliTeritorije(int brojTeritorija, int[,] Vrednosti, char[,] Mapa, int brojIgraca)
-    {
-        for(int i=0;i<brojTeritorija;i++)
+
+        static int[,] PodeliTeritorije(int brojTeritorija, int[,] Vrednosti, char[,] Mapa, int[] ljudiKojeTrebaPodeliti)
         {
+            for(int i=0;i<brojTeritorija;i++)
+            {
+                bool neuspesnoIzabranaTeritorija = true;
+                
+                ObrisiTekst();
+                Console.SetCursorPosition(0, 50);
+                Console.ResetColor();
+                Console.Write("Igrač ");
+                if (i % brojIgraca == 0)
+                    Console.BackgroundColor = ConsoleColor.Magenta;
+                else if (i % brojIgraca == 1)
+                    Console.BackgroundColor = ConsoleColor.Red;
+                else if (i % brojIgraca == 2)
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                else if (i % brojIgraca == 3)
+                    Console.BackgroundColor = ConsoleColor.Cyan;
+                else if (i % brojIgraca == 4)
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                else if (i % brojIgraca == 5)
+                    Console.BackgroundColor = ConsoleColor.Yellow;
+                Console.Write((i % brojIgraca + 1));
+                Console.ResetColor();
+                Console.Write(" bira teritoriju. Unesite broj sive teritorije od 1 do {0}: ",brojTeritorija);
+                Console.ResetColor();
+                int unetaTeritorija;
+                do
+                {
+                    neuspesnoIzabranaTeritorija=false;
+                    while (!int.TryParse(Console.ReadLine(), out unetaTeritorija) || unetaTeritorija<1 || unetaTeritorija>brojTeritorija)
+                    {
+                        ObrisiTekst();
+                        Console.Write("Pogresan unos. Unesite broj u opsegu 1 do " + brojTeritorija + ": ");
+                        neuspesnoIzabranaTeritorija=true;
+                    }
+                    if(Vrednosti[0,unetaTeritorija-1]!=0)
+                    {
+                        ObrisiTekst();
+                        Console.Write("Teritorija koju ste uneli je zauzeta. Unesite broj teritorije koja je sive boje: ");
+                        neuspesnoIzabranaTeritorija=true;
+                    }
+                } while (neuspesnoIzabranaTeritorija);
+                Vrednosti[0,unetaTeritorija-1]=i%brojIgraca+1;
+                Vrednosti[1,unetaTeritorija-1]=1;
+                ljudiKojeTrebaPodeliti[i%brojIgraca]--;
+                ZameniVlasnika(Mapa, unetaTeritorija-1, i % brojIgraca + 1);
+                IspisiStatusIgreNaTabli(Vrednosti, "MAPA" + Convert.ToString(brojMape));
+            }
+        
+            return Vrednosti;
+        }
+        static int[] PodeliPocetneVojnike()
+        {
+          int[] ljudiKojeTrebaPodeliti=new int[6];
+          if(brojIgraca==3)for(int i=0;i<3;i++)ljudiKojeTrebaPodeliti[i]=35;
+          if(brojIgraca==4)for(int i=0;i<4;i++)ljudiKojeTrebaPodeliti[i]=30;
+          if(brojIgraca==5)for(int i=0;i<5;i++)ljudiKojeTrebaPodeliti[i]=25;
+          if(brojIgraca==6)for(int i=0;i<6;i++)ljudiKojeTrebaPodeliti[i]=20;
+          return ljudiKojeTrebaPodeliti;
+        }
+
+    static int[] PodeliVojnike(int[,] Vrednosti,int[] ljudiKojeTrebaPodeliti)
+    {
+        int i = 0;
+        while(ljudiKojeTrebaPodeliti[0]>0 || ljudiKojeTrebaPodeliti[1] > 0 || ljudiKojeTrebaPodeliti[2] > 0 || ljudiKojeTrebaPodeliti[3] > 0 ||
+            ljudiKojeTrebaPodeliti[4] > 0 || ljudiKojeTrebaPodeliti[5] > 0)
+        {
+            if (ljudiKojeTrebaPodeliti[i % brojIgraca] == 0) continue;
             bool neuspesnoIzabranaTeritorija = true;
-            
             ObrisiTekst();
             Console.SetCursorPosition(0, 50);
             Console.ResetColor();
             Console.Write("Igrač ");
-            if (brojTeritorija % brojIgraca == 0)
-                Console.ForegroundColor = ConsoleColor.Magenta;
-            else if (brojTeritorija % brojIgraca == 1)
-                Console.ForegroundColor = ConsoleColor.Red;
-            else if (brojTeritorija % brojIgraca == 2)
-                Console.ForegroundColor = ConsoleColor.DarkBlue;
-            else if (brojTeritorija % brojIgraca == 3)
-                Console.ForegroundColor = ConsoleColor.Cyan;
-            else if (brojTeritorija % brojIgraca == 4)
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-            else if (brojTeritorija % brojIgraca == 5)
-                Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write((i % brojIgraca + 1) + " bira teritoriju. Unesite broj sive teritorije od 1 do {0}: ",brojTeritorija);
+            if (i % brojIgraca == 0)
+                Console.BackgroundColor = ConsoleColor.Magenta;
+            else if (i % brojIgraca == 1)
+                Console.BackgroundColor = ConsoleColor.Red;
+            else if (i % brojIgraca == 2)
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+            else if (i % brojIgraca == 3)
+                Console.BackgroundColor = ConsoleColor.Cyan;
+            else if (i % brojIgraca == 4)
+                Console.BackgroundColor = ConsoleColor.DarkGreen;
+            else if (i % brojIgraca == 5)
+                Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.Write((i % brojIgraca + 1));
+            Console.ResetColor();
+            Console.Write(" bira teritoriju na koju postavlja jednog čoveka." +
+                " Unesite broj teritorje označene vašom bojom na koju želite da postavite čoveka: ");
             int unetaTeritorija;
             do
             {
-                neuspesnoIzabranaTeritorija=false;
-                while (!int.TryParse(Console.ReadLine(), out unetaTeritorija) || unetaTeritorija<1 || unetaTeritorija>brojTeritorija)
+                neuspesnoIzabranaTeritorija = false;
+                while (!int.TryParse(Console.ReadLine(), out unetaTeritorija))
                 {
                     ObrisiTekst();
-                    Console.Write("Pogresan unos. Unesite broj u opsegu 1 do " + brojTeritorija + ": ");
-                    neuspesnoIzabranaTeritorija=true;
+                    Console.Write("Pogresan unos. Unesite jedan od brojeva teritorije vaše boje: ");
+                    neuspesnoIzabranaTeritorija = true;
                 }
-                if(Vrednosti[0,unetaTeritorija-1]!=0)
+                if (Vrednosti[0, unetaTeritorija - 1] != i%brojIgraca)//ovde nešto nije kako treba da bude
                 {
                     ObrisiTekst();
-                    Console.Write("Teritorija koju ste uneli je zauzeta. Unesite broj teritorije koja je sive boje: ");
-                    neuspesnoIzabranaTeritorija=true;
+                    Console.Write("Teritorija koju ste uneli nije vaša. Unesite broj teritorije koja je vaše boje: ");
+                    neuspesnoIzabranaTeritorija = true;
                 }
             } while (neuspesnoIzabranaTeritorija);
-            Vrednosti[0,unetaTeritorija-1]=i%brojIgraca+1;
-            Vrednosti[1,unetaTeritorija-1]=1;
-            ZameniVlasnika(Mapa, unetaTeritorija-1, i % brojIgraca + 1);
+            Vrednosti[1, unetaTeritorija - 1]++;
             IspisiStatusIgreNaTabli(Vrednosti, "MAPA" + Convert.ToString(brojMape));
+            i++;
         }
-        return Vrednosti;
+        
+            return ljudiKojeTrebaPodeliti;
     }
+
+    static void IspisKarticaTrenutnogIgraca (Kartica[] sveKartice)
+    {
+      int xKoordinata = 0;
+      for (int i = 0; i < sveKartice.Length; i++)
+      {
+        if (sveKartice[i].Vlasnik == trenutniIgrac)
+        {
+          Console.SetCursorPosition(xKoordinata, 50);
+          Console.ForegroundColor = ConsoleColor.Black;
+          if (sveKartice[i].Tip == 0)
+          {
+            Console.BackgroundColor = ConsoleColor.Cyan;
+            Console.Write("  ");
+            Console.SetCursorPosition(xKoordinata, 50);
+            Console.Write("\U0001f921");
+          }
+          else if (sveKartice[i].Tip == 1)
+          {
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.Write("  ");
+            Console.SetCursorPosition(xKoordinata, 50);
+            Console.Write("\uD83D\uDC82");
+          }
+          else if (sveKartice[i].Tip == 2)
+          {
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.Write("  ");
+            Console.SetCursorPosition(xKoordinata, 50);
+            Console.Write("\U0001f40e");
+          }
+          else
+          {
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.Write("  ");
+            Console.SetCursorPosition(xKoordinata, 50);
+            Console.Write("\u2699\uFE0F");
+          }
+          Console.SetCursorPosition(xKoordinata, 51);
+          Console.Write("  ");
+          Console.SetCursorPosition(xKoordinata, 51);
+          Console.Write(sveKartice[i].Teritorija);
+          xKoordinata += 5;
+        }
+      }
+    }
+    
     public static void Main(string[] args)
     {
         Console.Clear();
-        int brojMeni=MainMenu();
-        IspisiRizikoLogo(100,16);
+        int brojMeni = MainMenu();
+        IspisiRizikoLogo(100, 16);
         Console.SetCursorPosition(108, 25);
         Console.Write("Izaberite broj igraca: ");
         BiranjeIgraca();
@@ -779,16 +896,20 @@ static void NacrtajHorizontalnoPolje(string tekst, int left, int top)
         if (brojMape == 1) imeMape = "MAPA1";
         else if (brojMape == 2) imeMape = "MAPA2";
         else imeMape = "MAPA3";
-        
+        brojIgraca = 6;
+        int[] ljudiKojeTrebaPodeliti = new int[6];
+        ljudiKojeTrebaPodeliti = PodeliPocetneVojnike();
         char[,] Mapa = PretvaracTxtMapeUMatricu(imeMape);
-        int[,] Vrednosti = new int[4, 40];//cije, vojnici, konji, avioni
+        int[,] Vrednosti = new int[4, brojTeritorija];//cije, vojnici, konji, avioni
         //for (int i = 0; i < Vrednosti.GetLength(1); i++) Vrednosti[0, i] = i % 7;
         IspisMape(Mapa, Vrednosti);
-        IspisiStatusIgreNaTabli(Vrednosti,imeMape);
-        Vrednosti=PodeliTeritorije(27,Vrednosti,Mapa,brojIgraca);
+        IspisiStatusIgreNaTabli(Vrednosti, imeMape);
+        Vrednosti = PodeliTeritorije(brojTeritorija, Vrednosti, Mapa, ljudiKojeTrebaPodeliti);
+        PodeliVojnike(Vrednosti,ljudiKojeTrebaPodeliti);
         int[] VrednostiNaKockama = NasumicneKocke(2,1);
         //IspisiKocke(VrednostiNaKockama);
         ZameniVlasnika(Mapa,5,3);
+        Kartica[] sveKartice = PravljenjeKartica();
         
     }
 }
